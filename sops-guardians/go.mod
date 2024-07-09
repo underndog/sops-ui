@@ -3,7 +3,10 @@ module sops-guardians
 go 1.21
 
 require (
-	github.com/aws/aws-sdk-go v1.54.9
+	github.com/aws/aws-sdk-go v1.54.16
+	github.com/aws/aws-sdk-go-v2 v1.21.1
+	github.com/aws/aws-sdk-go-v2/config v1.18.44
+	github.com/aws/aws-sdk-go-v2/service/sts v1.23.1
 	github.com/getsops/sops/v3 v3.8.1
 	github.com/labstack/echo/v4 v4.12.0
 	github.com/labstack/gommon v0.4.2
@@ -25,8 +28,6 @@ require (
 	github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/internal v1.0.0 // indirect
 	github.com/AzureAD/microsoft-authentication-library-for-go v1.1.1 // indirect
 	github.com/ProtonMail/go-crypto v0.0.0-20230923063757-afb1ddc0824c // indirect
-	github.com/aws/aws-sdk-go-v2 v1.21.1 // indirect
-	github.com/aws/aws-sdk-go-v2/config v1.18.44 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.13.42 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.13.12 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.42 // indirect
@@ -36,7 +37,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/kms v1.24.6 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sso v1.15.1 // indirect
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.17.2 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sts v1.23.1 // indirect
 	github.com/aws/smithy-go v1.15.0 // indirect
 	github.com/blang/semver v3.5.1+incompatible // indirect
 	github.com/cenkalti/backoff/v3 v3.2.2 // indirect
