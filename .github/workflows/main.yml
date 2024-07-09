@@ -31,7 +31,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./sops-ui
-          file: Dockerfile
+          file: ./sops-ui/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/sops-ui:latest, ${{ secrets.DOCKER_HUB_USERNAME }}/sops-ui:${{ env.RELEASE_VERSION }}
       - name: Run Trivy vulnerability scanner
