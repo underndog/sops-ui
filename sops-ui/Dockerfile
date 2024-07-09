@@ -1,44 +1,33 @@
-# Refer to https://github.com/codityco/003-how-to-dockerise-a-laravel-project/blob/main/Dockerfile
-### https://www.youtube.com/watch?v=uYhowDSkwyk
-FROM php:8.3.4-apache
+FROM php:8.3.4-fpm-alpine
 
 # Install dependencies
-RUN apt-get update && \
-    apt-get install -y \
+RUN apk add --no-cache \
     libzip-dev \
-    zip
+    zip \
+    unzip \
+    && docker-php-ext-install pdo_mysql zip
 
-# Enable mod_rewrite
-RUN a2enmod rewrite
+# Enable Apache mod_rewrite
+RUN apk add --no-cache apache2 apache2-proxy apache2-ssl apache2-proxy_http \
+    && sed -i 's/^#\(Include .*mod_rewrite.so\)/\1/' /etc/apache2/httpd.conf
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo_mysql zip
+# Set document root and update Apache configuration
+ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/httpd.conf
 
-ENV APACHE_DOCUMENT_ROOT=/var/www/html
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
-RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
-
-# Copy the application code
+# Copy application code
 COPY . /var/www/html
 
-# Set the working directory
-WORKDIR /var/www/html
+# Install Composer and dependencies
+RUN apk add --no-cache composer \
+    && composer install --no-dev --optimize-autoloader
 
-# Install composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-# Install project dependencies
-RUN composer install
-
-# Set permissions
+# Set permissions for storage and cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Create a .env file from .env.example
-RUN if [ -f ".env.example" ]; then \
-        cp .env.example .env; \
-    else \
-        echo "No .env.example file found"; \
-    fi
+# Copy .env.example to .env and generate application key
+RUN cp /var/www/html/.env.example /var/www/html/.env \
+    && php artisan key:generate
 
-# Generate application key
-RUN php artisan key:generate --ansi
+EXPOSE 80
+CMD ["php-fpm"]
