@@ -1,4 +1,4 @@
-FROM alpine:3.16
+FROM alpine:3.20
 LABEL Maintainer="Stanislav Khromov <stanislav+github@khromov.se>" \
       Description="Lightweight container with Nginx 1.22 & PHP-FPM 8 based on Alpine Linux."
 
