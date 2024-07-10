@@ -85,6 +85,9 @@ RUN if [ -f ".env.example" ]; then \
 # Generate application key
 RUN php artisan key:generate --ansi
 
+# Run database migrations
+RUN php artisan migrate --force
+
 # Expose the port nginx is reachable on
 EXPOSE 8080
 
