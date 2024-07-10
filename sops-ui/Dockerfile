@@ -1,25 +1,53 @@
-FROM alpine:3.14
+FROM alpine:3.16
+LABEL Maintainer="Stanislav Khromov <stanislav+github@khromov.se>" \
+      Description="Lightweight container with Nginx 1.22 & PHP-FPM 8 based on Alpine Linux."
 
-LABEL Maintainer="Jabar Digital Service <digital.service@jabarprov.go.id>" \
-      Description="Lightweight container with Nginx 1.16 & PHP-FPM 8.0 based on Alpine Linux (forked from trafex/alpine-nginx-php7)."
+ARG PHP_VERSION="8.0.30-r0"
 
-# make sure you can use HTTPS
-RUN apk --update add ca-certificates
+# https://github.com/wp-cli/wp-cli/issues/3840
+ENV PAGER="more"
 
-# Install packages
-RUN apk --no-cache add php8 php8-fpm php8-opcache php8-openssl php8-curl \
-    nginx supervisor curl
+# Install packages and remove default server definition
+RUN apk --no-cache add php8=${PHP_VERSION} \
+    php8-ctype \
+    php8-curl \
+    php8-dom \
+    php8-exif \
+    php8-fileinfo \
+    php8-fpm \
+    php8-gd \
+    php8-iconv \
+    php8-intl \
+    php8-mbstring \
+    php8-mysqli \
+    php8-opcache \
+    php8-openssl \
+    php8-pecl-imagick \
+    php8-pecl-redis \
+    php8-phar \
+    php8-session \
+    php8-simplexml \
+    php8-soap \
+    php8-xml \
+    php8-xmlreader \
+    php8-zip \
+    php8-zlib \
+    php8-pdo \
+    php8-xmlwriter \
+    php8-tokenizer \
+    php8-pdo_mysql \
+    php8-pdo_sqlite \
+    nginx supervisor curl tzdata htop mysql-client dcron
 
-# Create a symbolic link for PHP 8
-RUN ln -s /usr/bin/php8 /usr/bin/php
+# Symlink php8 => php
+# RUN ln -s /usr/bin/php8 /usr/bin/php
+
+# Install PHP tools
+RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && chmod +x wp-cli.phar && mv wp-cli.phar /usr/local/bin/wp
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 
 # Configure nginx
 COPY config/nginx.conf /etc/nginx/nginx.conf
-
-RUN ls -la /etc/nginx/conf.d/
-
-# Remove default server definition
-RUN rm /etc/nginx/conf.d/default.conf
 
 # Configure PHP-FPM
 COPY config/fpm-pool.conf /etc/php8/php-fpm.d/www.conf
@@ -31,7 +59,7 @@ COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Setup document root
 RUN mkdir -p /var/www/html
 
-# Make sure files/folders needed by the processes are accessible when they run under the nobody user
+# Make sure files/folders needed by the processes are accessable when they run under the nobody user
 RUN chown -R nobody.nobody /var/www/html && \
   chown -R nobody.nobody /run && \
   chown -R nobody.nobody /var/lib/nginx && \
@@ -50,5 +78,5 @@ EXPOSE 8080
 # Let supervisord start nginx & php-fpm
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 
-# Configure a healthcheck to validate that everything is up & running
+# Configure a healthcheck to validate that everything is up&running
 HEALTHCHECK --timeout=10s CMD curl --silent --fail http://127.0.0.1:8080/fpm-ping
