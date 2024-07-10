@@ -1,33 +1,58 @@
-FROM php:8.3.4-fpm-alpine
+FROM alpine:3.11
 
-# Install dependencies
-RUN apk add --no-cache \
-    libzip-dev \
-    zip \
-    unzip \
-    && docker-php-ext-install pdo_mysql zip
+LABEL Maintainer="Jabar Digital Service <digital.service@jabarprov.go.id>" \
+      Description="Lightweight container with Nginx 1.16 & PHP-FPM 8.0 based on Alpine Linux (forked from trafex/alpine-nginx-php7)."
 
-# Enable Apache mod_rewrite
-RUN apk add --no-cache apache2 apache2-proxy apache2-ssl apache2-proxy_http \
-    && sed -i 's/^#\(Include .*mod_rewrite.so\)/\1/' /etc/apache2/httpd.conf
+ADD https://dl-cdn.alpinelinux.org/alpine/v3.11/main/x86_64/APKINDEX.tar.gz /etc/apk/keys/
 
-# Set document root and update Apache configuration
-ENV APACHE_DOCUMENT_ROOT /var/www/html/public
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/httpd.conf
+# make sure you can use HTTPS
+RUN apk --update add ca-certificates
 
-# Copy application code
-COPY . /var/www/html
+# Update repository URLs for PHP 8
+RUN echo "https://dl-cdn.alpinelinux.org/alpine/v3.11/community" >> /etc/apk/repositories && \
+    echo "https://dl-cdn.alpinelinux.org/alpine/v3.11/main" >> /etc/apk/repositories
 
-# Install Composer and dependencies
-RUN apk add --no-cache composer \
-    && composer install --no-dev --optimize-autoloader
+# Install packages
+RUN apk --no-cache add php8 php8-fpm php8-opcache php8-openssl php8-curl \
+    nginx supervisor curl
 
-# Set permissions for storage and cache
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# Create a symbolic link for PHP 8
+RUN ln -s /usr/bin/php8 /usr/bin/php
 
-# Copy .env.example to .env and generate application key
-RUN cp /var/www/html/.env.example /var/www/html/.env \
-    && php artisan key:generate
+# Configure nginx
+COPY config/nginx.conf /etc/nginx/nginx.conf
 
-EXPOSE 80
-CMD ["php-fpm"]
+# Remove default server definition
+RUN rm /etc/nginx/conf.d/default.conf
+
+# Configure PHP-FPM
+COPY config/fpm-pool.conf /etc/php8/php-fpm.d/www.conf
+COPY config/php.ini /etc/php8/conf.d/custom.ini
+
+# Configure supervisord
+COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Setup document root
+RUN mkdir -p /var/www/html
+
+# Make sure files/folders needed by the processes are accessible when they run under the nobody user
+RUN chown -R nobody.nobody /var/www/html && \
+  chown -R nobody.nobody /run && \
+  chown -R nobody.nobody /var/lib/nginx && \
+  chown -R nobody.nobody /var/log/nginx
+
+# Switch to use a non-root user from here on
+USER nobody
+
+# Add application
+WORKDIR /var/www/html
+COPY --chown=nobody src/ /var/www/html/
+
+# Expose the port nginx is reachable on
+EXPOSE 8080
+
+# Let supervisord start nginx & php-fpm
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+
+# Configure a healthcheck to validate that everything is up & running
+HEALTHCHECK --timeout=10s CMD curl --silent --fail http://127.0.0.1:8080/fpm-ping
