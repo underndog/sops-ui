@@ -16,6 +16,8 @@ RUN ln -s /usr/bin/php8 /usr/bin/php
 # Configure nginx
 COPY config/nginx.conf /etc/nginx/nginx.conf
 
+RUN ls -la /etc/nginx/conf.d/
+
 # Remove default server definition
 RUN rm /etc/nginx/conf.d/default.conf
 
