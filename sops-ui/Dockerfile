@@ -1,16 +1,10 @@
-FROM alpine:3.11
+FROM alpine:3.14
 
 LABEL Maintainer="Jabar Digital Service <digital.service@jabarprov.go.id>" \
       Description="Lightweight container with Nginx 1.16 & PHP-FPM 8.0 based on Alpine Linux (forked from trafex/alpine-nginx-php7)."
 
-ADD https://dl-cdn.alpinelinux.org/alpine/v3.11/main/x86_64/APKINDEX.tar.gz /etc/apk/keys/
-
 # make sure you can use HTTPS
 RUN apk --update add ca-certificates
-
-# Update repository URLs for PHP 8
-RUN echo "https://dl-cdn.alpinelinux.org/alpine/v3.11/community" >> /etc/apk/repositories && \
-    echo "https://dl-cdn.alpinelinux.org/alpine/v3.11/main" >> /etc/apk/repositories
 
 # Install packages
 RUN apk --no-cache add php8 php8-fpm php8-opcache php8-openssl php8-curl \
