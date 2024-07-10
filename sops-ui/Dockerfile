@@ -8,35 +8,35 @@ ARG PHP_VERSION="8.3.9-r0"
 ENV PAGER="more"
 
 # Install packages and remove default server definition
-RUN apk --no-cache add php8=${PHP_VERSION} \
-    php8-ctype \
-    php8-curl \
-    php8-dom \
-    php8-exif \
-    php8-fileinfo \
-    php8-fpm \
-    php8-gd \
-    php8-iconv \
-    php8-intl \
-    php8-mbstring \
-    php8-mysqli \
-    php8-opcache \
-    php8-openssl \
-    php8-pecl-imagick \
-    php8-pecl-redis \
-    php8-phar \
-    php8-session \
-    php8-simplexml \
-    php8-soap \
-    php8-xml \
-    php8-xmlreader \
-    php8-zip \
-    php8-zlib \
-    php8-pdo \
-    php8-xmlwriter \
-    php8-tokenizer \
-    php8-pdo_mysql \
-    php8-pdo_sqlite \
+RUN apk --no-cache add php83=${PHP_VERSION} \
+    php83-ctype \
+    php83-curl \
+    php83-dom \
+    php83-exif \
+    php83-fileinfo \
+    php83-fpm \
+    php83-gd \
+    php83-iconv \
+    php83-intl \
+    php83-mbstring \
+    php83-mysqli \
+    php83-opcache \
+    php83-openssl \
+    php83-pecl-imagick \
+    php83-pecl-redis \
+    php83-phar \
+    php83-session \
+    php83-simplexml \
+    php83-soap \
+    php83-xml \
+    php83-xmlreader \
+    php83-zip \
+    php83-zlib \
+    php83-pdo \
+    php83-xmlwriter \
+    php83-tokenizer \
+    php83-pdo_mysql \
+    php83-pdo_sqlite \
     nginx supervisor curl tzdata htop mysql-client dcron
 
 # Symlink php8 => php
