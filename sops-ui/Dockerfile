@@ -75,6 +75,16 @@ COPY --chown=nobody src/ /var/www/html/
 # Install Composer dependencies
 RUN composer install --no-dev --optimize-autoloader
 
+# Create a .env file from .env.example
+RUN if [ -f ".env.example" ]; then \
+        cp .env.example .env; \
+    else \
+        echo "No .env.example file found"; \
+    fi
+
+# Generate application key
+RUN php artisan key:generate --ansi
+
 # Expose the port nginx is reachable on
 EXPOSE 8080
 
