@@ -75,8 +75,9 @@ class FileController extends Controller
         file_put_contents($filePath, $yamlContent);
 
         try {
+            $sopsGuardiansURL = env('SOPS_GUARDIANS_URL', 'http://localhost:9999');
             // Send the request to the external service
-            $response = Http::asMultipart()->post('http://localhost:9999/encrypt-file', [
+            $response = Http::asMultipart()->post($sopsGuardianURL.'/encrypt-file', [
                 [
                     'name' => 'name',
                     'contents' => Session::get('uploaded_filename') // This is the value for the 'name' field
@@ -103,7 +104,7 @@ class FileController extends Controller
                 // echo $yamlContent;
                 $yamlEncryptedView  = view('encrypted-file.show-encrypted-secret')->with('yaml_encrypted',$yamlEncrypted);
 
-                
+
                 return view('layout')->with('encrypted-file.show-encrypted-secret', $yamlEncryptedView);
             } else {
                 return response()->json(['error' => 'Failed to decrypt the file'], $response->status());
@@ -116,7 +117,6 @@ class FileController extends Controller
         // Return a response to the user
         return redirect()->back()->with('success', 'Secret file updated successfully.');
     }
-    
 
     public function decrypt_file(Request $request) {
         // Specify the path to your local file
@@ -137,8 +137,9 @@ class FileController extends Controller
         }
 
         try {
+            $sopsGuardiansURL = env('SOPS_GUARDIANS_URL', 'http://localhost:9999');
             // Send the request to the external service
-            $response = Http::asMultipart()->post('http://localhost:9999/decrypt-file', [
+            $response = Http::asMultipart()->post($sopsGuardiansURL.'/decrypt-file', [
                 [
                     'name' => 'name',
                     'contents' => $uploaded_filename // This is the value for the 'name' field
