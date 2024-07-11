@@ -12,6 +12,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"io"
 	"net/http"
+	"sops-guardians/helper"
 	"sops-guardians/log"
 	"sops-guardians/model"
 	"time"
@@ -136,6 +137,7 @@ func (f *FileHandler) HandlerFileEncrypted(c echo.Context) error {
 }
 
 func (f *FileHandler) HandlerFileDecrypted(c echo.Context) error {
+	helper.LoadAWSAccess()
 	name := c.FormValue("name")
 	log.Debug("filename is : ", name)
 
