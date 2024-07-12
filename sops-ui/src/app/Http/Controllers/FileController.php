@@ -77,7 +77,7 @@ class FileController extends Controller
         try {
             $sopsGuardiansURL = env('SOPS_GUARDIANS_URL', 'http://localhost:9999');
             // Send the request to the external service
-            $response = Http::asMultipart()->post($sopsGuardianURL.'/encrypt-file', [
+            $response = Http::asMultipart()->post($sopsGuardiansURL.'/encrypt-file', [
                 [
                     'name' => 'name',
                     'contents' => Session::get('uploaded_filename') // This is the value for the 'name' field
