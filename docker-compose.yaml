@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  laravel:
+    image: mrnim94/sops-ui:latest
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+    environment:
+      - SOPS_GUARDIANS_URL=http://golang:9999
+
+  golang:
+    image: mrnim94/sops-guardians:latest
+    # ports:
+    #   - "9999:9999"
+    networks:
+      - app-network
+    environment:
+      - AWS_ACCESS_KEY_ID=XXXXXXXXXXXXX
+      - AWS_SECRET_ACCESS_KEY=xxxxXXXXXXXXXXXXXXxxxXXXXxxx
+
+networks:
+  app-network:
+    driver: bridge
