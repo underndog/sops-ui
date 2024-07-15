@@ -3,7 +3,7 @@ module sops-guardians
 go 1.21
 
 require (
-	github.com/aws/aws-sdk-go v1.54.9
+	github.com/aws/aws-sdk-go v1.54.19
 	github.com/aws/aws-sdk-go-v2 v1.30.3
 	github.com/aws/aws-sdk-go-v2/config v1.27.26
 	github.com/aws/aws-sdk-go-v2/service/sts v1.30.3
