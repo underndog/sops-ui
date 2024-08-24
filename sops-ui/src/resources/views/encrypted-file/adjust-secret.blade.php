@@ -8,7 +8,7 @@
         <button type="button" class="btn bg-gradient-primary mb-0 ms-lg-auto me-lg-0 me-auto mt-lg-0 mt-2">Save</button>
     </div>
 </div>
-<div class="row mt-4">
+{{-- <div class="row mt-4">
     <div class="col-lg-4">
         <div class="card mt-4" data-animation="true">
             <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
@@ -31,8 +31,8 @@
             </p>
         </div>
     </div>
-</div>
-<div class="col-lg-8 mt-lg-0 mt-4">
+</div> --}}
+<div class="col-lg-12 mt-lg-0 mt-4">
     <div class="card">
         <div class="card-body">
             <form method="POST" action="{{URL::to('/encrypt-file')}}">
@@ -41,8 +41,8 @@
                 <!-- @dump($data_items) -->
                 <div id="dynamic_field">
                 @foreach ($data_items as $item)
-                <div class="row mt-4">
-                    <div class="col-12 col-sm-6">
+                <div class="row mt-4 dynamic-row">
+                    <div class="col-12 col-sm-3">
                         <div class="input-group input-group-static">
                             <label>Key</label>
                             <input name="keys[]" type="text" class="form-control multisteps-form__input" onfocus="focused(this)" onfocusout="defocused(this)" value="{{ $item['key'] }}">
@@ -53,6 +53,9 @@
                             <label>Value</label>
                             <textarea name="values[]" type="text" class="form-control multisteps-form__input" onfocus="focused(this)" onfocusout="defocused(this)">{{ base64_decode($item['value']) }}</textarea>
                         </div>
+                    </div>
+                    <div class="col-12 col-sm-3">
+                    <button type="button" class="btn btn-danger btn-remove-row remove-secret-key">Remove</button>
                     </div>
                 </div>
                 @endforeach
