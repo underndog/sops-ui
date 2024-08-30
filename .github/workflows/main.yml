@@ -33,7 +33,7 @@ jobs:
           context: ./sops-ui
           file: ./sops-ui/Dockerfile
           push: true
-          platforms: linux/amd64,linux/arm64,darwin/arm64
+          platforms: linux/amd64,linux/arm64,darwin/amd64
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/sops-ui:latest, ${{ secrets.DOCKER_HUB_USERNAME }}/sops-ui:${{ env.RELEASE_VERSION }}
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
@@ -55,7 +55,7 @@ jobs:
           context: ./sops-guardians
           file: ./sops-guardians/Dockerfile
           push: true
-          platforms: linux/amd64,linux/arm64,darwin/arm64
+          platforms: linux/amd64,linux/arm64,darwin/amd64
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/sops-guardians:latest, ${{ secrets.DOCKER_HUB_USERNAME }}/sops-guardians:${{ env.RELEASE_VERSION }}
 
       - name: Run Trivy vulnerability scanner sops-guardians
