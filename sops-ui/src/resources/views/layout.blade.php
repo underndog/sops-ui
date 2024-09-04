@@ -133,7 +133,7 @@ https://demos.creative-tim.com/material-dashboard-pro/pages/dashboards/analytics
             })(window, document, "script", "dataLayer", "GTM-NKDMSK6");
         </script>
 
-        <script defer data-site="demos.creative-tim.com" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
+        {{-- <script defer data-site="demos.creative-tim.com" src="https://api.nepcha.com/js/nepcha-analytics.js"></script> --}}
         <meta name="csrf-token" content="{{ csrf_token() }}">
     </head>
     <body class="g-sidenav-show bg-gray-200">
