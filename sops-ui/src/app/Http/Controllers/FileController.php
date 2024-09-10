@@ -11,6 +11,7 @@ use Session;
 
 class FileController extends Controller
 {
+
     public function file_upload(Request $request){
         $request->validate([
             'file' => 'required|file|max:2048',
@@ -190,5 +191,66 @@ class FileController extends Controller
 
         // // Return the YAML content
         // return response($yamlContent, 200)->header('Content-Type', 'text/plain');
+    }
+
+    public function upload_file_raw()
+    {
+        return view('encrypted-file.upload-unencrypted-file');
+    }
+
+    public function encrypt_file_raw(Request $request)
+    {
+        $request->validate([
+            'kms-arn' => 'required',
+        ]);
+
+        $kms_arn = $request->input('kms-arn');
+
+        // Specify the path to your local file
+        $filePath = 'public/uploads/yaml/'.Session::get('uploaded_filename');
+
+        try {
+            $sopsGuardiansURL = env('SOPS_GUARDIANS_URL', 'http://localhost:9999');
+            // Send the request to the external service
+            $response = Http::asMultipart()->post($sopsGuardiansURL.'/encrypt-file', [
+                [
+                    'name' => 'name',
+                    'contents' => Session::get('uploaded_filename') // This is the value for the 'name' field
+                ],
+                [
+                    'name' => 'yaml-file',
+                    'contents' => fopen($filePath, 'r'),
+                    'filename' => Session::get('uploaded_filename'),
+                    'headers' => [
+                        'Content-Type' => 'text/plain' // Set the content type for the file part specifically
+                    ]
+                ],
+                [
+                    'name' => 'kms-arn',
+                    'contents' => $kms_arn,
+                ]
+
+            ]);
+            // Check if the request was successful
+            if ($response->successful()) {
+                $responseData = $response->json(); // Get the response data as an array
+                $yamlEncrypted = $responseData['data']; // Extract the 'data' field containing the YAML content
+
+                // echo $yamlContent;
+                $yamlEncryptedView  = view('encrypted-file.show-encrypted-secret')->with('yaml_encrypted',$yamlEncrypted);
+
+
+                return view('layout')->with('encrypted-file.show-encrypted-secret', $yamlEncryptedView);
+            } else {
+                return response()->json(['error' => 'Failed to decrypt the file'], $response->status());
+            }
+        } catch (\Exception $e) {
+            // Handle any errors
+            return response()->json(['error' => 'An error occurred: ' . $e->getMessage()], 500);
+        }
+
+        // Return a response to the user
+        return redirect()->back()->with('success', 'Secret file updated successfully.');
+
     }
 }
