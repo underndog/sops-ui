@@ -53,3 +53,13 @@ SOPS-UI will encrypt the file using KMS-AWS and SOPS, and then display the resul
 ![](https://raw.githubusercontent.com/mrnim94/sops-ui/master/docs/picture/step1-decrypt-secret.png)
 
 ### Modify the encrypted file using SOPS and KMS-AWS.
+
+![](https://raw.githubusercontent.com/mrnim94/sops-ui/master/docs/picture/step1-decrypt-file.png)
+
+Click Next end Push the encrypted file.  
+![](https://raw.githubusercontent.com/mrnim94/sops-ui/master/docs/picture/step2-decrypt-file.png)
+
+Sops-UI will decrypt SOPS and base64, allowing you to easily understand and modify the keys and values.  
+Next, Let's click Encrypt and copy them.
+
+![](https://raw.githubusercontent.com/mrnim94/sops-ui/master/docs/picture/step3-decrypt-file.png)

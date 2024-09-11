@@ -40,4 +40,6 @@ networks:
 You need to provide the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` to encrypt and decrypt data.
 
 
+Guideline: [How to install Sops-UI and run it](https://github.com/mrnim94/sops-ui/blob/master/docs/GuideLine.md)
+
 ![](https://raw.githubusercontent.com/mrnim94/sops-ui/master/docs/picture/step3-encrypt-secret.png)
