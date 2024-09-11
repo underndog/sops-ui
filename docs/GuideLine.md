@@ -49,3 +49,7 @@ Upload the file that you want to encrypt and click SEND.
 ![](https://raw.githubusercontent.com/mrnim94/sops-ui/master/docs/picture/step3-encrypt-secret.png)
 
 SOPS-UI will encrypt the file using KMS-AWS and SOPS, and then display the result for you to copy and save as a new file.
+
+![](https://raw.githubusercontent.com/mrnim94/sops-ui/master/docs/picture/step1-decrypt-secret.png)
+
+### Modify the encrypted file using SOPS and KMS-AWS.
