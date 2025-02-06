@@ -9,6 +9,7 @@ import (
 	"github.com/getsops/sops/v3/keyservice"
 	sopsKMS "github.com/getsops/sops/v3/kms"
 	"github.com/getsops/sops/v3/stores/yaml"
+	"github.com/getsops/sops/v3/version"
 	"github.com/labstack/echo/v4"
 	"io"
 	"net/http"
@@ -85,6 +86,7 @@ func (f *FileHandler) HandlerFileEncrypted(c echo.Context) error {
 				{masterKey},
 			},
 			EncryptedRegex: "^(data|stringData)$",
+			Version:        version.Version, // Add the SOPS version here
 		},
 	}
 
